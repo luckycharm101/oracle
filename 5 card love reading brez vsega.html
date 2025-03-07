@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+    <title>Lenormand Love Reading</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-top: 20px;
+            color: #333;
+        }
+        #cards-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap; /* Ensure cards stay on the same line */
+            gap: 5px; /* Reduce gap if necessary */
+            overflow-x: auto;               
+        }
+        .card {
+            margin: 10px;
+            padding: 10px; /* Reduced padding to give more space to the image */
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 300px;
+            height: auto; /* Adjusted height to better match image */
+            background-color: black;
+        }
+        .card img {
+            width: 200px; /* Ensure the image width fits within the card */
+            height: auto; /* Maintain aspect ratio of the image */
+            object-fit: cover; /* Ensure the image covers the available space proportionally */
+            margin-bottom: 5px; /* Adjust spacing between image and text */
+}
+          }
+        .card h3 {
+            color: red;
+            font-size: 16px;
+        }
+        .card p {
+            color: white;
+            font-size: 14px
+        }
+      button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #eb5055;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkred;
+        }
+        @media (max-width: 500px) {
+      #cards-container {
+            gap: 0px; /* Smaller gap between cards for mobile */
+        }
+        .card {
+            width: 70px;  /* Smaller card width for mobile */
+            height: 150px; /* Smaller card height for mobile */
+            padding: 0.5px; /* Adjust padding for smaller size */
+        }
+        .card img {
+            width: 60px; /* Smaller image size for mobile */
+            height: 70px; /* Adjust the height accordingly */
+        }
+        .card h3 {
+            font-size: 10px; /* Smaller font size for card titles on mobile */
+        }
+        .card p {
+            font-size: 8px; /* Smaller font size for card descriptions on mobile */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Introductory text -->
+    <div id="intro-text">
+      <p><h3>This is a 5-card Lenormand love reading.</h3></p>
+      <br>
+      <p>This oracle will give a simple answer to your question concerning your romance.</p>
+      <p><em>Close your eyes, concentrate on what you want to know.</em></p>
+      <p>Push the Draw Cards button.</p>
+    </div>
+
+    <h2 id="title">Draw Your Lenormand Cards</h2>
+    <div id="cards-container"></div>
+
+    <!-- Draw button -->
+    <button onclick="drawCards()" id="drawButton">Draw Cards</button>
+
+    <!-- Result text -->
+    <div id="result-text" style="display: none;">
+      <p><h3>INTERPRETATION</h3>
+        <br>
+      <p><b>The card in the middle is the focus point of your reading. It will give you the answer.</b></p>
+      <p>Combine cards 1 +2 and 2+3 to get more information.</p>
+      <p>Finally, combine cards 1+3 for additional information.</p>
+      <p>Try to make a sentence from the combinations to answer your question.</p>      
+    </div>
+    <script>
+        const lenormandCards = [
+            { name: "Rider", meaning: "New suitor, Love message, Swift romance", image: "https://i.imgur.com/AAXbwGA.jpeg" },
+            { name: "Clover", meaning: "Flirtation, Lucky encounter, Brief romance", image: "https://i.imgur.com/2fCPcv5.jpeg" },
+            { name: "Ship", meaning: "Long-distance love, Foreign lover, Love journey", image: "https://i.imgur.com/qstWzpR.jpeg" },
+            { name: "House", meaning: "Commitment, Living together, Family approval", image: "https://i.imgur.com/6utqmiJ.jpeg" },
+            { name: "Tree", meaning: "Stable relationship, Growing love, Health in love", image: "https://i.imgur.com/MVNwWjv.jpeg" },
+            { name: "Clouds", meaning: "Relationship uncertainty, Confusion in love, Clearing doubts", image: "https://i.imgur.com/MDFOUgA.jpeg" },
+            { name: "Snake", meaning: "Seduction, Love rival, Complicated romance", image: "https://i.imgur.com/reyx9cF.jpeg" },
+            { name: "Coffin", meaning: "End of relationship, Stagnant love, Transformation", image: "https://i.imgur.com/TOtJhYK.jpeg" },
+            { name: "Bouquet", meaning: "Romance, Admiration, Pleasant surprise", image: "https://i.imgur.com/QmOK1l4.jpeg" },
+            { name: "Scythe", meaning: "Sudden breakup, Quick attraction, Sharp decision", image: "https://i.imgur.com/trGGVna.jpeg" },
+            { name: "Whip", meaning: "Conflict, Passion, Repeated patterns", image: "https://i.imgur.com/6lDkAva.jpeg" },
+            { name: "Birds", meaning: "Love talks, Anxiety, Couple's discussion", image: "https://i.imgur.com/6lDkAva.jpeg" },
+            { name: "Child", meaning: "New beginning, Innocent love, Playful romance", image: "https://i.imgur.com/q10f8aJ.jpeg" },
+            { name: "Fox", meaning: "Deception, Self-interest, Cautious love", image: "https://i.imgur.com/KdLKAM0.jpeg" },
+            { name: "Bear", meaning: "Protection, Possessiveness, Dominant partner", image: "https://i.imgur.com/pO6drMW.jpeg" },
+            { name: "Stars", meaning: "Hope in love, Inspiration, Future dreams", image: "https://i.imgur.com/N7etrls.jpeg" },
+            { name: "Stork", meaning: "Love changes, Relationship transition, Fresh start", image: "https://i.imgur.com/7w4kpKq.jpeg" },
+            { name: "Dog", meaning: "Loyalty, Friendship to love, Faithful partner", image: "https://i.imgur.com/bD98L6m.jpeg" },
+            { name: "Tower", meaning: "Distance, Isolation, Official commitment", image: "https://i.imgur.com/TojComw.jpeg" },
+            { name: "Garden", meaning: "Social romance, Public relationship, Dating scene", image: "https://i.imgur.com/q8aluMm.jpeg" },
+            { name: "Mountain", meaning: "Love obstacles, Challenging relationship, Delayed romance", image: "https://i.imgur.com/0tV8IIh.jpeg" },
+            { name: "Crossroads", meaning: "Love choices, Multiple suitors, Decision time", image: "https://th.bing.com/th/id/OIG2.volGGi7KqiImnXRfaTop?pid=ImgGn" },
+            { name: "Mice", meaning: "Relationship stress, Gradual decline, Emotional drain", image: "https://i.imgur.com/X2jwv66.jpeg" },
+            { name: "Heart", meaning: "True love, Romance, Emotional matters", image: "https://i.imgur.com/lFYv5mi.jpeg" },
+            { name: "Ring", meaning: "Commitment, Proposal, Partnership", image: "https://i.imgur.com/8eSZcov.jpeg" },
+            { name: "Book", meaning: "Secret love, Hidden feelings, Mystery romance", image: "https://i.imgur.com/2E0iPdx.jpeg" },
+            { name: "Letter", meaning: "Love message, Declaration, Written communication.", image: "https://i.imgur.com/l5C57Vm.jpeg" },
+            { name: "Man", meaning: "Male partner", image: "https://i.imgur.com/VPOhh3P.jpeg" },
+            { name: "Woman", meaning: "Female partner", image: "https://i.imgur.com/GXoPN0z.jpeg" },
+            { name: "Lily", meaning: "Harmony, Mature love, Sensuality", image: "https://i.imgur.com/rdssrQq.jpeg" },
+            { name: "Sun", meaning: "Happy relationship, Success in love, Joy together", image: "https://i.imgur.com/BwKFhOZ.jpeg" },
+            { name: "Moon", meaning: "Emotional bond, Romance, Recognition.", image: "https://i.imgur.com/BwKFhOZ.jpeg" },
+            { name: "Key", meaning: "Solutions, destiny, or unlocking something.", image: "https://i.imgur.com/9yfE2Zn.jpeg" },
+            { name: "Fish", meaning: "Independent, Happily Single, No-Strings", image: "https://i.imgur.com/MKKbHfp.jpeg" },
+            { name: "Anchor", meaning: "Stable relationship, Security, Lasting love", image: "https://i.imgur.com/UZfmrff.jpeg" },
+            { name: "Cross", meaning: "Self-Sacrifice, Codependence, Pressurised, Obligations", image: "https://i.imgur.com/2ymEqbR.jpeg" }
+        ];
+
+        function drawCards() {
+            const cardsContainer = document.getElementById('cards-container');
+            const title = document.getElementById('title');
+            const introText = document.getElementById('intro-text');
+            const resultText = document.getElementById('result-text');
+            const drawButton = document.getElementById('drawButton');
+
+            // Hide intro text and title, show result text
+            introText.style.display = 'none';
+            title.style.display = 'none';
+            resultText.style.display = 'block';
+
+            // Clear previous cards if any
+            cardsContainer.innerHTML = '';
+
+            // Shuffle and pick 5 random cards
+            const shuffledCards = lenormandCards.sort(() => 0.5 - Math.random());
+            const selectedCards = shuffledCards.slice(0, 5);                                    
+          
+            selectedCards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.innerHTML = `
+                    <img src="${card.image}" alt="${card.name}">
+                    <h3>${card.name}</h3>
+                    <p>${card.meaning}</p>
+                `;
+                cardsContainer.appendChild(cardElement);
+            });
+            // Hide draw button
+            drawButton.style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
